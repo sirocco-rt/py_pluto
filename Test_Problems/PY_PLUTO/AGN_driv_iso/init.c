@@ -577,6 +577,7 @@ for (iangle=0;iangle<NFLUX_ANGLES;iangle++)
     		} 
 	} //This the end of the DOM loop
 } //This is the end of the loop over angular bins
+
 }
 
 void bilinear (double x11[2],double x22[2],double v11[2],double v12[2],double v21[2],double v22[2],double test[2],double ans[2],int flag)
