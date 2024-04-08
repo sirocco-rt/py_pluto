@@ -494,8 +494,9 @@ void Initialize(Data *data, Runtime *runtime, Grid *grid, cmdLine *cmd_line)
     printf ("Setting up flux arrays\n");	
     x11_interp= ARRAY_4D(2,NX3_TOT, NX2_TOT, NX1_TOT, double);
     x22_interp= ARRAY_4D(2,NX3_TOT, NX2_TOT, NX1_TOT, double);
-	k_UV_array=ARRAY_3D(NX3_TOT, NX2_TOT,NX1_TOT,double);
+	  k_UV_array=ARRAY_3D(NX3_TOT, NX2_TOT,NX1_TOT,double);
     alpha_UV_array=ARRAY_3D(NX3_TOT, NX2_TOT,NX1_TOT,double);
+    M_max_global = ARRAY_3D(NX3_TOT, NX2_TOT, NX1_TOT, double);
     g_rad = ARRAY_4D(3,NX3_TOT, NX2_TOT, NX1_TOT, double);  //This is a global variable because rad force doesnt have access to data
 	
   #endif
