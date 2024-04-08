@@ -902,6 +902,7 @@ extern double ****g_rad; //
 	extern double ****dvds_mod_offset;
 	
 	extern double ****dvds_array;
+        extern double ***M_max_global;
 		
     extern double ***k_UV_array;
     extern double ***alpha_UV_array;

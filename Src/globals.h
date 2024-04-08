@@ -206,7 +206,7 @@ double g_inputParam[32]; /**< Array containing the user-defined parameters.
   		double ****dvds_mod_offset;
 		
   		double ****dvds_array;
-
+ 		double ***M_max_global;
 		 
           double ****x11_interp;//
           double ****x22_interp;//
