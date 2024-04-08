@@ -1,0 +1,53 @@
+System_type(star,binary,agn,previous)          agn 
+
+### Parameters for the Central Object
+Central_object.mass(msol)                  100000000.00000001
+Central_object.radius(cm)                  880000000000000.0
+
+### Parameters for the Disk (if there is one)
+
+Disk.type(none,flat,vertically.extended)       flat
+Disk.radiation(yes,no)      yes
+Disk.temperature.profile(standard,readin,yso) standard
+Disk.rad_type_to_make_wind(bb,models) bb
+Disk.mdot(msol/yr) 1.3
+Disk.radmax(cm) 4.4e+16
+
+### Parameters for BL or AGN
+
+Boundary_layer.radiation(yes,no)                   no
+Central_object.radiation(yes,no)     no
+
+### Parameters descibing the various winds or coronae in the system
+
+Wind.radiation(yes,no) yes
+Wind.number_of_components  1
+Wind.type(SV,star,hydro,corona,kwd,homologous,yso,shell,imported)  imported 
+Wind.coord_system(spherical,cylindrical,polar,cyl_var)  polar
+Wind.dim.in.x_or_r.direction               30
+Wind.dim.in.z_or_theta.direction           30
+
+### Parameters associated with photon number, cycles,ionization and radiative transfer options
+
+Photons_per_cycle        10000000.0
+Ionization_cycles        10
+Spectrum_cycles          0
+Wind.ionization(on.the.spot,ML93,LTE_tr,LTE_te,fixed,matrix_bb,matrix_pow)  matrix_pow
+Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   escape_prob
+Atomic_data  data/standard80.dat
+Surface.reflection.or.absorption(reflect,absorb,thermalized.rerad)    thermalized.rerad
+Wind_heating.extra_processes(none,adiabatic,nonthermal,both)   none
+
+### Parameters for Domain 0
+
+Wind.model2import 00002476.pluto
+Wind.t.init                                10000
+Wind.filling_factor(1=smooth,<1=clumped)   1
+
+### Parameters for Reverberation Modeling (if needed)
+
+Reverb.type(none,photon,wind,matom)   none
+
+### Other parameters
+
+Photon_sampling.approach(T_star,cv,yso,AGN,min_max_freq,user_bands,cloudy_test,wide,logarithmic)  AGN
