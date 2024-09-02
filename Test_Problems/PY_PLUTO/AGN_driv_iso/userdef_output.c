@@ -16,6 +16,8 @@ void ComputeUserVar (const Data *d, Grid *grid)
  ***************************************************************** */
 {
   int i, j, k, nv,ii,iangle;  
+  double teff, b, disk_mdot, cent_mass,r_0,R;
+
 #if COOLING != NO 
 double ***comp_h_pre, ***comp_c_pre, ***line_c_pre, ***brem_c_pre, ***xray_h_pre;
 #endif
@@ -62,8 +64,11 @@ M_out1=GetUserVar("M_max1");
 M_out2=GetUserVar("M_max2");
 
 
-
-
+disk_mdot = g_inputParam[DISK_MDOT];
+cent_mass = g_inputParam[CENT_MASS]; 
+r_0=g_inputParam[R_0]/UNIT_LENGTH;
+teff = pow(3.*CONST_G*cent_mass*disk_mdot/(8.*CONST_PI*CONST_sigma),0.25);
+teff *= pow(UNIT_LENGTH,-0.75);
 
 mu=g_inputParam[MU];
 lx=g_inputParam[L_star]*g_inputParam[f_x];  //Xray luminosiy
@@ -74,11 +79,16 @@ sigma_e=CONST_sigmaT/CONST_amu/1.18;
   
   
   DOM_LOOP(k,j,i){
-  	  r=grid->x[IDIR][i]*UNIT_LENGTH;  //The radius - in real units
+      r=grid->x[IDIR][i]*UNIT_LENGTH;  //The radius - in real units
       rho = d->Vc[RHO][k][j][i]*UNIT_DENSITY;  //density of the current cell in physical units	 
       
       #if EOS==ISOTHERMAL
-      T = T_out[k][j][i]=g_inputParam[T_ISO];
+      R = x1[i]*sin(x2[j]);
+      if (R<r_0) R = 1.0001*r_0;
+          //b = 1.- pow(r_0/R,0.5);
+      b=1.;
+      T = T_out[k][j][i] = teff*pow(R*R*R/b,-0.25);
+          //T = T_out[k][j][i]=g_inputParam[T_ISO];
       #else
       T   = T_out[k][j][i] = d->Vc[PRS][k][j][i]/d->Vc[RHO][k][j][i]*KELVIN*mu;    //Compute initial temperature in Kelvin
       #endif
@@ -131,7 +141,7 @@ sigma_e=CONST_sigmaT/CONST_amu/1.18;
 #if EOS!=ISOTHERMAL
     T   = v[PRS]/v[RHO]*KELVIN*mu;    //Compute initial temperature in Kelvin
 #else
-	T=g_inputParam[T_ISO];               //isothermal temperature
+//	T=g_inputParam[T_ISO];               //isothermal temperature
 	
 #endif
 	
@@ -140,13 +150,11 @@ sigma_e=CONST_sigmaT/CONST_amu/1.18;
     krad=g_inputParam[KRAD];               
     alpharad=g_inputParam[ALPHARAD]; 
 	
-    if (krad==999 && alpharad==999)
-	{
-		for (ii=0;ii<MPOINTS;ii++)
-		{
-			M_UV_array[ii]=M_UV_fit[ii][k][j][i];
-		}
+    if (krad==999 && alpharad==999) {
+	for (ii=0;ii<MPOINTS;ii++) {
+	    M_UV_array[ii]=M_UV_fit[ii][k][j][i];
 	}
+    }
 	M_temp1=-1.0;
 	M_temp2=-1.0;
 	fmax=1e-99;
@@ -155,27 +163,19 @@ sigma_e=CONST_sigmaT/CONST_amu/1.18;
 	    if (dvds_array[iangle][k][j][i]>0.0)
 	    {				
 	        t_UV=   sigma_e * rho * v_th / dvds_array[iangle][k][j][i];  				
-		    if (krad==999 && alpharad==999)
-			{
-				M_UV=linterp(log10(t_UV),t_fit,M_UV_array,MPOINTS);
-			}
-			else
-			{
-		        M_UV=krad*pow(t_UV,(alpharad));	
-			}				
-	        if (M_UV>M_max)
-	            M_UV=M_max;
-			if (M_UV>M_temp1)
-				M_temp1=M_UV;
+		if (krad==999 && alpharad==999) {
+		    M_UV=linterp(log10(t_UV),t_fit,M_UV_array,MPOINTS);
+		} else {
+		    M_UV=krad*pow(t_UV,(alpharad));	
+		}				
+	        if (M_UV>M_max) M_UV=M_max;
+		if (M_UV>M_temp1) M_temp1=M_UV;
 	    }
-        if (pow(flux_r_UV[iangle][k][j][i],2)+pow(flux_t_UV[iangle][k][j][i],2)>fmax)
-		{
-			fmax=pow(M_UV*flux_r_UV[iangle][k][j][i],2)+pow(M_UV*flux_t_UV[iangle][k][j][i],2);
-			M_temp2=M_UV;
-		}
-		
-		
-		
+            if (pow(flux_r_UV[iangle][k][j][i],2)+pow(flux_t_UV[iangle][k][j][i],2)>fmax)
+	    {
+	        fmax=pow(M_UV*flux_r_UV[iangle][k][j][i],2)+pow(M_UV*flux_t_UV[iangle][k][j][i],2);
+		M_temp2=M_UV;
+	    }		
 	}
 	M_out1[k][j][i]=M_temp1;
 	M_out2[k][j][i]=M_temp2;
