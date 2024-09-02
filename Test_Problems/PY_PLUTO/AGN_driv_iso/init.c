@@ -573,11 +573,10 @@ for (iangle=0;iangle<NFLUX_ANGLES;iangle++)
     		if (dvds_array[iangle][k][j][i]!=dvds_array[iangle][k][j][i])
     		{
 			printf ("BOOM we have a nan in cycle %li iang=%i k=%i j=%i i=%i dvds_array %e flux %e %e %e %e ds %e ans2[0] %e ans2[1] %e ans1[0] %e ans1[1] %e \n",g_stepNumber,iangle,k,j,i,dvds_array[iangle][k][j][i],flux_t_UV[iangle][k][j][i],flux_p_UV[iangle][k][j][i],flux_r_UV[iangle][k][j][i],mod_flux,ds,ans2[0],ans2[1],ans1[0],ans1[0],v1);       
-			exit(0);
+			//exit(0);
     		} 
 	} //This the end of the DOM loop
 } //This is the end of the loop over angular bins
-
 }
 
 void bilinear (double x11[2],double x22[2],double v11[2],double v12[2],double v21[2],double v22[2],double test[2],double ans[2],int flag)
@@ -645,10 +644,19 @@ void BodyForceVector(double *v, double *g, double x1, double x2, double x3,int i
     
     T_iso=g_inputParam[T_ISO];               //isothermal temperature
     mu=g_inputParam[MU];  //Mean particle mass
+    double disk_mdot = g_inputParam[DISK_MDOT];
+    double cent_mass = g_inputParam[CENT_MASS];
+    double r_0=g_inputParam[R_0]/UNIT_LENGTH;
+    double teff = pow(3.*CONST_G*cent_mass*disk_mdot/(8.*CONST_PI*CONST_sigma),0.25);
+    teff *= pow(UNIT_LENGTH,-0.75);
+
 #if EOS!=ISOTHERMAL
     T   = v[PRS]/v[RHO]*KELVIN*mu;    //Compute initial temperature in Kelvin
 #else
-    T=T_iso;
+    double R = x1*sin(x2);
+    if (R<r_0) R = 1.0001*r_0;
+    T = teff*pow(R*R*R,-0.25);
+    //T=T_iso;
 #endif
     
     
