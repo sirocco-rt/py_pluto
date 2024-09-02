@@ -10,5 +10,5 @@ import numpy as np
 import pluto_python_sub as pps
 import re
 
-pps.pluto2py_rtheta(2476)
+pps.pluto2py_rtheta(4600)
 #pps.python_input_file(0,data,cycles=2)

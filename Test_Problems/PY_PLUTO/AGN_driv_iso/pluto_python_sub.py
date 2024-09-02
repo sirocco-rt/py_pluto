@@ -343,8 +343,8 @@ def python_input_file(fname,data,cycles=2):
     output.write("Spectrum_cycles          0\n")
     output.write("Wind.ionization(on.the.spot,ML93,LTE_tr,LTE_te,fixed,matrix_bb,matrix_pow)  matrix_pow\n")
     if data["line_trans"]=="macro":
-        output.write("Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   macro_atoms_escape_prob\n")
-        output.write("Atomic_data  data/h10_hetop_standard80.dat\n")
+        output.write("Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   macro_atoms_thermal_trapping\n")
+        output.write("Atomic_data  data/h20_hetop_standard80.dat\n")
         output.write("Matom_transition_mode(mc_jumps,matrix) matrix\n")
     elif data["line_trans"]=="simple":
         output.write("Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   escape_prob\n")

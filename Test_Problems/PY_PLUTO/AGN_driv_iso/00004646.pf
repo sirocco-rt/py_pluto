@@ -1,7 +1,7 @@
-System_type(star,binary,agn,previous)          agn 
+System_type(star,binary,agn,previous)          star  
 
 ### Parameters for the Central Object
-Central_object.mass(msol)                  100000000.00000001
+Central_object.mass(msol)                  1000000000.0
 Central_object.radius(cm)                  880000000000000.0
 
 ### Parameters for the Disk (if there is one)
@@ -10,8 +10,8 @@ Disk.type(none,flat,vertically.extended)       flat
 Disk.radiation(yes,no)      yes
 Disk.temperature.profile(standard,readin,yso) standard
 Disk.rad_type_to_make_wind(bb,models) bb
-Disk.mdot(msol/yr) 1.3
-Disk.radmax(cm) 4.4e+16
+Disk.mdot(msol/yr) 18.0
+Disk.radmax(cm) 4.4e+17
 
 ### Parameters for BL or AGN
 
@@ -30,17 +30,18 @@ Wind.dim.in.z_or_theta.direction           30
 ### Parameters associated with photon number, cycles,ionization and radiative transfer options
 
 Photons_per_cycle        10000000.0
-Ionization_cycles        10
+Ionization_cycles        928
 Spectrum_cycles          0
 Wind.ionization(on.the.spot,ML93,LTE_tr,LTE_te,fixed,matrix_bb,matrix_pow)  matrix_pow
-Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   escape_prob
-Atomic_data  data/standard80.dat
+Line_transfer(pure_abs,pure_scat,sing_scat,escape_prob,thermal_trapping,macro_atoms,macro_atoms_thermal_trapping)   macro_atoms_thermal_trapping
+Atomic_data  data/h20_hetop_standard80.dat
+Matom_transition_mode(mc_jumps,matrix) matrix
 Surface.reflection.or.absorption(reflect,absorb,thermalized.rerad)    thermalized.rerad
 Wind_heating.extra_processes(none,adiabatic,nonthermal,both)   none
 
 ### Parameters for Domain 0
 
-Wind.model2import 00002476.pluto
+Wind.model2import 00004646.pluto
 Wind.t.init                                10000
 Wind.filling_factor(1=smooth,<1=clumped)   1
 
@@ -50,4 +51,7 @@ Reverb.type(none,photon,wind,matom)   none
 
 ### Other parameters
 
-Photon_sampling.approach(T_star,cv,yso,AGN,min_max_freq,user_bands,cloudy_test,wide,logarithmic)  AGN
+Photon_sampling.approach(T_star,cv,yso,AGN,min_max_freq,user_bands,cloudy_test,wide,logarithmic)  logarithmic
+Photon_sampling.nbands                     10
+Photon_sampling.low_energy_limit(eV)       0.13333
+Photon_sampling.high_energy_limit(eV)      500

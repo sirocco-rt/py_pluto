@@ -30,9 +30,9 @@ data={} #Set up the dictionary that will contain all of the information for the 
 
 #This sets up the number of cores to use for the three different codes. Python and CAK are automatically mpi - but pluto needs to be specifcially compiled that way.
 
-data["nproc_py"]=192
-data["nproc_cak"]=192
-data["nproc_pluto"]=192
+data["nproc_py"]=128
+data["nproc_cak"]=128
+data["nproc_pluto"]=128
 
 
 
@@ -40,8 +40,8 @@ data["nproc_pluto"]=192
 #I've only set up an r-theta grid so far..
 
 #radial bins
-data["R_MIN"]=8.8e14
-data["R_MAX"]=4.4e16
+data["R_MIN"]=8.8e15
+data["R_MAX"]=4.4e17
 data["N_R"]=100
 data["s_r"]=1.05
 
@@ -69,7 +69,7 @@ data["L_star"]=9.05e34 #The luminosity of the central source
 data["rad_force"]=1 #this turns on bits of the code that deals with radiation - not quite sure what would happen if it was turned off!
 data["RHO_0"]=1e-12    #The midplane density
 data["RHO_ALPHA"]=1.5  #The dropoff of the midplane density with radius - not used in these runs
-data["R_0"]=8.8e14 #The scaling radius if we are dropping off with radius - so rho_midplane = rho_0 at r_0 - with rho_alpha=0 this does nothing.
+data["R_0"]=8.8e15 #The scaling radius if we are dropping off with radius - so rho_midplane = rho_0 at r_0 - with rho_alpha=0 this does nothing.
 data["MU"]=0.6 #The mean molecular mass - used to compute things like sound speed
 data["T_ISO"]=25000. #The isothermal temperature 
 
@@ -79,7 +79,7 @@ data["system_type"]='star' #/The overall geometry type
 
 
 data["CENT_RADIUS"]=8.8e14 #radius of the central object
-data["CENT_MASS"]=1.e8*c.M_sun.cgs.value #mass of the central object
+data["CENT_MASS"]=1.e9*c.M_sun.cgs.value #mass of the central object
 
 #We are using a boundary layer - because we can set the luminosity and temperature seperately
 
@@ -91,27 +91,27 @@ data["T_BL"]=40000. #boundsry layer temperature
 
 #More technical Stuff for the python runs
 
-data["python_ver"]="86k"  #the version of python to use - this was written to work with py86b - if it doesnt run - modifications may need to be made to the "python_input_file" subroutine in the pluto_python_sub.py file.
+data["python_ver"]="88"  #the version of python to use - this was written to work with py86b - if it doesnt run - modifications may need to be made to the "python_input_file" subroutine in the pluto_python_sub.py file.
 
 data["NPHOT"]=1e7 #number of photons
 
 data["disk_radiation"]="yes" #turn on disk radiation
-data["PY_DISK_MDOT"]=1.3 #and set the rate in solar masses per year
+data["PY_DISK_MDOT"]=18. #and set the rate in solar masses per year
 data["DISK_MDOT"]=data["PY_DISK_MDOT"]*c.M_sun.cgs.value/60/60/24/365.25 #we also need the disk accretion rate in g/s for pluto to compute the disk temperature
-data["DISK_TRUNC_RAD"]=4.4e16 #The maximum radius occupied by the disk - the odd name is a throwback to older interations
+data["DISK_TRUNC_RAD"]=4.4e17 #The maximum radius occupied by the disk - the odd name is a throwback to older interations
 
 
 
 data["wind_radiation"]="yes" #turn on the wind
 
-data["line_trans"]="simple" #line transfer mode - allows the potential for macro atom usage.
+data["line_trans"]="macro" #line transfer mode - allows the potential for macro atom usage.
 
 
 
 #Set up the initial things for the run
 
 t0=2.e3 #The run time for the initial pluto run - the first run is to produce a starting geometry
-dt=18.   #The time between calls to pluto (in seconds)
+dt=10.   #The time between calls to pluto (in seconds)
 
 if t0==0.0:
     print ("We need to run for at least one second, dummy")
@@ -220,7 +220,7 @@ for i in range(istart,10000): #Do a loop from istart to some big number. You can
 #Make a python parameter file to carry out a simulation on the    
     logfile.write("Making a python input file"+"\n")
     print("Making a python input file"+"\n")    
-    pps.python_input_file(root,data,cycles=init_py_cycles+i*py_cycles-995)
+    pps.python_input_file(root,data,cycles=init_py_cycles+i*py_cycles-8382)
     logfile.write("Successfully made a python input file"+"\n")
     print("Successfully made a python input file"+"\n")
 

@@ -41,7 +41,7 @@
 #define  WARNING_MESSAGES               YES
 #define  INTERNAL_BOUNDARY              YES
 #define  UNIT_DENSITY                   1e-14
-#define  UNIT_LENGTH                    1e14
+#define  UNIT_LENGTH                    1e15
 #define  UNIT_VELOCITY                  1e9
 #define  UNIT_MASS                      (UNIT_DENSITY*UNIT_LENGTH*UNIT_LENGTH*UNIT_LENGTH)
 #define  UNIT_ACCELERATION              (UNIT_VELOCITY*UNIT_VELOCITY/UNIT_LENGTH)
