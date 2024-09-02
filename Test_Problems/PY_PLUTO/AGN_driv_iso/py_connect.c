@@ -349,24 +349,18 @@ void read_py_fluxes (Data *d, Grid *grid)
 	FILE *fopen (), *fptr;
 	char *fgets (), aline[LINELENGTH];
 	long int ii,jj,kk,nwords;
-	double x1cen,x2cen,xin,zin,x1in,x2in;
+	double x1in,x2in;
     double kradin,alpharadin,rhoin;
     double krad,alpharad;
     double opt[4],UV[4],Xray[4];
 	double temp;
 	int iflux;
 	int icount,iaxis,match;
-	double *x1 = grid->x[IDIR];
+    double *x1 = grid->x[IDIR];
     double *x2 = grid->x[JDIR];
     double *x3 = grid->x[KDIR];
-    double *x1l = grid->xl[IDIR];
-    double *x2l = grid->xl[JDIR];
-    double *x3l = grid->xl[KDIR];
-	double *x1r = grid->xr[IDIR];
-    double *x2r = grid->xr[JDIR];
-    double *x3r = grid->xr[KDIR];
 	double rcen,thetacen,dens,gx,gy,gz;
-    double tol;
+    double tol=1e-6;
     kk=0;
     krad=g_inputParam[KRAD];               
     alpharad=g_inputParam[ALPHARAD];
@@ -375,7 +369,7 @@ void read_py_fluxes (Data *d, Grid *grid)
 	
 	printf ("Arrived in read_py_fluxes IBEG=%li JBEG=%li\n",IBEG,JBEG);
 	printf ("Reading in fluxes from python\n");
-	tol = 1.e-2;
+
 	for (iaxis=0;iaxis<3;iaxis++) //We loop over three axes - x,y,z in seperate files
 	{
 		if (iaxis==0) fptr = fopen ("directional_flux_theta.dat", "r");
@@ -386,7 +380,8 @@ void read_py_fluxes (Data *d, Grid *grid)
 	        printf ("No flux file\n");
 		}
         if (fgets (aline, LINELENGTH, fptr) != NULL){
-            fgets(aline, LINELENGTH, fptr);
+            fgets (aline, LINELENGTH, fptr);
+            
         } else {
             printf("Error reading aline\n");
             exit(0);
@@ -440,20 +435,15 @@ void read_py_fluxes (Data *d, Grid *grid)
         //printf("hello\n");
 		while (fscanf(fptr,"%ld ",&ii) !=EOF) //Read the first element of a line, and check for EOF
 		{
-            if (fscanf(fptr,"%ld %*ld %le %le",&jj,&xin, &zin) == 3) //Get the rest of the geometry stuff for this line
+            if (fscanf(fptr,"%ld %*ld %le %le",&jj,&x1in,  &x2in) == 3) //Get the rest of the geometry stuff for this line
             {
                 //Now we have to find what cell it relates to - we look for the geometry
                 DOM_LOOP(k,j,i)
                 {
-					x1cen = 0.5*(x1l[i]+x1r[i])*sin(0.5*(x2l[j]+x2r[j]));
-					x2cen = 0.5*(x1l[i]+x1r[i])*cos(0.5*(x2l[j]+x2r[j]));
-
-					//printf("x2[i+1]=%e, x2[i]=%e\n",x2[i+1],x2[i]);
-
-                    if (fabs(1.-(xin/UNIT_LENGTH/x1cen))<tol && fabs(1.-(zin/UNIT_LENGTH/x2cen))<tol)
+                    if (fabs(1.-(x1in/UNIT_LENGTH/x1[i]))<tol && fabs(1.-(x2in/x2[j]))<tol)
                     {
                         //printf("hello\n");
-                        //printf ("found a match %e %e %i %e %e %i\n",xin/UNIT_LENGTH,x1cen,i,zin/UNIT_LENGTH,x2cen,j);
+                        //printf ("found a match %e %e %i %e %e %i\n",x1in,x1[i]*UNIT_LENGTH,i,x2in,x2[j],j);
                         for (iflux=0;iflux<NFLUX_ANGLES;iflux++)
                         {
                             if (fscanf (fptr,"%le",&temp) == 1) //read the flux in one angular bin at a time
@@ -487,7 +477,7 @@ void read_py_fluxes (Data *d, Grid *grid)
                         }
                         else
                         {
-                            printf("Error in reading flux file because no match\n");
+                            printf("Error in reading flux file\n");
                             exit(0);
                         }
                     }
@@ -524,7 +514,7 @@ void read_py_fluxes (Data *d, Grid *grid)
 	
 	k=0; //Need to reset this number to zero after the dom loop!
 	
-	tol = 1.e-6;
+	
     if (krad==999 && alpharad==999)
     {
 		printf ("Importing a force multiplier fit file\n");
